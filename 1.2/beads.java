@@ -6,7 +6,7 @@ LANG: JAVA
 import java.io.*;
 
 public class beads {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException  {
         BufferedReader br = new BufferedReader(new FileReader("beads.in"));
         int N = Integer.parseInt(br.readLine().trim());
         String s = br.readLine().trim();

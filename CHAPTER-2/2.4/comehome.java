@@ -1,13 +1,15 @@
 /*
 PROG: comehome
 LANG: JAVA
-*/
+ */
 
 import java.io.*;
 import java.util.*;
 
 public class comehome {
+
     static class Node implements Comparable<Node> {
+
         char pasture;
         int distance;
 
@@ -29,6 +31,7 @@ public class comehome {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("comehome.in"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("comehome.out"));
         int P = Integer.parseInt(br.readLine().trim());
 
         Map<Character, List<Node>> adj = new HashMap<>();
@@ -49,7 +52,39 @@ public class comehome {
         br.close();
 
         PriorityQueue<Node> pq = new PriorityQueue<>();
+        Map<Character, Integer> dist = new HashMap<>();
 
+        for (char c : adj.keySet()) {
+            dist.put(c, Integer.MAX_VALUE);
+        }
+        dist.put('Z', 0);
+        pq.add(new Node('Z', 0));
 
+        while (!pq.isEmpty()) {
+            Node curr = pq.poll();
+            if (curr.distance > dist.get(curr.pasture)) {
+                continue;
+            }
+
+            for (Node neighbor : adj.get(curr.pasture)) {
+                int newDist = dist.get(curr.pasture) + neighbor.distance;
+                if (newDist < dist.get(neighbor.pasture)) {
+                    dist.put(neighbor.pasture, newDist);
+                    pq.add(new Node(neighbor.pasture, newDist));
+                }
+            }
+        }
+
+        char fastestCow = '?';
+        int minDistance = Integer.MAX_VALUE;
+        for (char c = 'A'; c <= 'Y'; c++) {
+            if (dist.containsKey(c) && dist.get(c) < minDistance) {
+                minDistance = dist.get(c);
+                fastestCow = c;
+            }
+        }
+
+        bw.write(fastestCow + " " + minDistance + "\n");
+        bw.close();
     }
 }
